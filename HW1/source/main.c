@@ -1,4 +1,6 @@
 #include<stdio.h>
+#include"comm.h"
+#include"tcp.h"
 #include"utils.h"
 
 #define BUFFSIZE 1024
@@ -14,7 +16,7 @@ void tcp(){
 	
 	//parsing every line
 	while(fgets(buf,BUFFSIZE,f)!=NULL){
-		parse_tcp4(buf,&conn);
+		parse_tcp4(&conn,buf);
 		printf("local addr: %s:%d, remote addr: %s:%d, inode: %llu\n",conn.l_ip,conn.l_port,conn.r_ip,conn.r_port,conn.inode);
 
 	}

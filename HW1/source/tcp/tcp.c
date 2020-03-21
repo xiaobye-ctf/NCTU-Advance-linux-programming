@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include"comm.h"
 #include"utils.h"
 
 void parse_tcp4(CONN_RECORD* conn,char* line){

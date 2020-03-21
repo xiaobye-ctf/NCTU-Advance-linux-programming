@@ -2,6 +2,6 @@
 
 int main(void){
 	unsigned long long a;
-	sscanf("FFFFFFFFFFFFFFFF","%lX",&a);
+	sscanf("FFFFFFFFFFFFFFFF","%llX",&a);
 	printf("%llu\n",a);
 }

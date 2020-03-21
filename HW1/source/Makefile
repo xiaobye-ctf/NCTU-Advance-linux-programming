@@ -16,4 +16,5 @@ clean:
 		(cd $$dir; rm *.o); \
 	done
 	rm *.o
+	rm ../hw1
 
