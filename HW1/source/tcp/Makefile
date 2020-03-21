@@ -1,9 +1,7 @@
 CC = gcc
-CFALGS = 
+INC = -I../include
 
-all: utils
+all: tcp.c 
+	$(CC) -c $^ $(INC) $(CFLAGS)
 
-	
-utils: ../utils/utils.c
-	$(CC) -c $< $(CFLAGS)
 
