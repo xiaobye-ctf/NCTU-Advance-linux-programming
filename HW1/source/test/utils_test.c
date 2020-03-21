@@ -15,6 +15,10 @@ int main(void){
 	int port;
 	hex_to_ipv4("0100007F",ip);
 	hex_to_port("18EB",&port);
-	printf("%s:%hu\n",ip,port);
+	printf("local address: %s:%hu\n",ip,port);
+
+	hex_to_ipv4("00000000",ip);
+	hex_to_port("0000",&port);
+	printf("remote address: %s:%hu\n",ip,port);
 	return 0;
 }
