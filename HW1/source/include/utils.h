@@ -5,11 +5,9 @@ typedef struct{
     int l_port;
     char r_ip[60];
     int r_port;
-    int inode;
+    unsigned long long inode;
 }CONN_RECORD;
-
 
 void hex_to_ipv4(char *,char* );
 void hex_to_port(char*,int*);
-
 

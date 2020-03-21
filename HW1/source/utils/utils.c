@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<arpa/inet.h>
+#include"utils.h"
 void hex_to_ipv4(char *hex,char* str_ip){
     struct in_addr addr;
     sscanf(hex,"%X",&addr.s_addr);
