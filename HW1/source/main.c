@@ -3,7 +3,7 @@
 #include"tcp.h"
 #include"utils.h"
 void print_info(CONN_RECORD *conn,char * pid_cmdline){
-	printf("local addr: %s:%d, remote addr: %s:%d, inode: %llu, pid/cmdline:%s\n",
+	printf("local addr: %s:%d, remote addr: %s:%d, inode: %llu, pid/cmdline: %s\n",
 		    conn->l_ip,
 		    conn->l_port,
 			conn->r_ip,

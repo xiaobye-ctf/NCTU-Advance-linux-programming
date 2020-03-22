@@ -50,6 +50,7 @@ int search_proc_by_inode(unsigned long long inode){
 	DIR* d_fd;
 	int n;
     char buf[200];
+	char buf2[200];
 	char buf1[100];
 	struct dirent* ent;
 	struct dirent* ent_fd;
@@ -87,7 +88,8 @@ int search_proc_by_inode(unsigned long long inode){
 #endif
 				buf1[n]='\0';
 				sprintf(buf,"socket:[%llu]",inode);
-				if(strcmp(buf1,buf)==0){
+				sprintf(buf2,"0000:[%llu]",inode);
+				if(strcmp(buf1,buf)==0 ||(strcmp(buf1,buf2)==0) ){
 #ifdef DEBUG
 					printf("find target pid: %s\n",ent->d_name);
 #endif
@@ -115,8 +117,9 @@ int search_proc_by_inode(unsigned long long inode){
 
 char* get_cmdline(int pid,char* cmdline){
     char buf[200];
-    FILE *f; 
-    sprintf(buf,"/proc/%u/cmdline",pid);
+    FILE *f;
+	long size;
+    sprintf(buf,"/proc/%u/comm",pid);
 
     f = fopen(buf,"r");
 	if(f==NULL){
@@ -124,8 +127,9 @@ char* get_cmdline(int pid,char* cmdline){
 		return NULL;
 	}
 	
-	fread(cmdline,BUFFSIZE-1,1,f);
-	cmdline[BUFFSIZE]='\0';
+	fgets(cmdline,BUFFSIZE,f);
+	size = strlen(cmdline);
+	cmdline[size-1]='\0';
 
     fclose(f);
 

@@ -14,18 +14,18 @@ int main(void){
     long size;
     FILE *f; 
 	int pid=2166;    
-    sprintf(buf,"/proc/%u/cmdline",pid);
+    sprintf(buf,"/proc/%u/comm",pid);
 
 	printf("open %s\n",buf);
     f = fopen(buf,"r");
 	perror("fopen: ");
 	
-	fread(cmdline,1024,1,f);
-	cmdline[1024]='\n';
-
+	fgets(cmdline,1024,f);
+	size = strlen(cmdline);
+	cmdline[size-1]='\0';
     fclose(f);
 
-    printf("%s\n",cmdline);
+    printf("%s",cmdline);
 	return 0;
 
 }
