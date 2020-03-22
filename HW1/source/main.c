@@ -34,7 +34,7 @@ void udp(char *pattern){
 	CONN_RECORD conn;
 	FILE * f;
 	int pid=-1;
-	printf("UDP\n\n");
+	printf("UDP\n");
 	print_title();
 	/*start parsing "/proc/net/udp"*/
 	f = fopen("/proc/net/udp","r");
@@ -116,7 +116,7 @@ void tcp(char *pattern){
 	CONN_RECORD conn;
 	FILE * f;
 	int pid=-1;
-	printf("TCP\n\n");
+	printf("TCP\n");
 	print_title();
 	/*start parsing "/proc/net/tcp"*/
 	f = fopen("/proc/net/tcp","r");
@@ -196,9 +196,11 @@ void tcp(char *pattern){
 int main(int argc,char**argv){
 	if(argc==2){
 		tcp(argv[1]);	
+		puts("");
 		udp(argv[1]);
 	}else{
 		tcp(NULL);
+		puts("");
 		udp(NULL);
 	}
 }
