@@ -8,7 +8,7 @@
 #include<string.h>
 void hex_to_ipv6(char *hex,char* str_ip){
 	char str_ip6[4][9];
-	char tmp[100];
+	char tmp[60];
 	int *i_ptr;
     struct in6_addr addr;
 	int i;

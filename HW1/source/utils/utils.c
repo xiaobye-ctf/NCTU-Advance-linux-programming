@@ -15,12 +15,22 @@ void hex_to_ipv4(char *hex,char* str_ip){
     sscanf(tmp,"%s",str_ip);
 }
 void hex_to_ipv6(char *hex,char* str_ip){
-    struct in_addr addr;
-    sscanf(hex,"%X",&addr.s_addr);
-    char *tmp = inet_ntoa(addr);
+	char str_ip6[4][9];
+	char tmp[60];
+	int *i_ptr;
+    struct in6_addr addr;
+	int i;
+
+	i_ptr = (int*)&addr.s6_addr;
+	
+	sscanf(hex,"%8X%8X%8X%8X",&i_ptr[0],&i_ptr[1],&i_ptr[2],&i_ptr[3]);
+	for(i=0;i<4;i++){
+		printf("%X\n",i_ptr[i]);
+	}
+    inet_ntop(AF_INET6,&addr,tmp,100);
+
     sscanf(tmp,"%s",str_ip);
 }
-
 void hex_to_port(char* hex,int* int_port){
     sscanf(hex,"%X",int_port);  
 }

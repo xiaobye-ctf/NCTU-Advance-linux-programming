@@ -43,10 +43,10 @@ void parse_tcp6(CONN_RECORD* conn,char* line){
            &inod
     );  
     //convert local address's format from hex to ip format
-    hex_to_ipv4(l_i,conn->l_ip);
+    hex_to_ipv6(l_i,conn->l_ip);
     hex_to_port(l_p,&conn->l_port);
     //convert remote address's format from hex to ip format
-    hex_to_ipv4(r_i,conn->r_ip);
+    hex_to_ipv6(r_i,conn->r_ip);
     hex_to_port(r_p,&conn->r_port);
     //convert inode from string to unsigned long long
     conn->inode=inod;
