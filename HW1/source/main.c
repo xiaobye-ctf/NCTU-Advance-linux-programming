@@ -13,21 +13,22 @@ void print_info(CONN_RECORD *conn,char * pid_cmdline){
 	);
 }
 void tcp(char *pattern){
-	char buf[BUFFSIZE];
-	char pid_cmdline[2*BUFFSIZE];
+	char buf[BUFSIZE];
+	char pid_cmdline[2*BUFSIZE];
 	CONN_RECORD conn;
 	FILE * f;
-	int pid;
+	int pid=-1;
 	printf("TCP\n\n");
 	/*start parsing "/proc/net/tcp"*/
 	f = fopen("/proc/net/tcp","r");
 	//deprecate redundant line
-	fgets(buf,BUFFSIZE,f);
+	fgets(buf,BUFSIZE,f);
 	
 	//parsing every line
-	while(fgets(buf,BUFFSIZE,f)!=NULL){
+	while(fgets(buf,BUFSIZE,f)!=NULL){
 		parse_tcp4(&conn,buf);
 		pid = search_proc_by_inode(conn.inode);
+
 		//if find corresponding pid,then get cmdline
 		if(pid!=-1){
 			if(get_cmdline(pid,buf)==NULL){
@@ -39,7 +40,7 @@ void tcp(char *pattern){
 			sprintf(pid_cmdline,"-/-");
 		}
 
-		//matching
+		//matching and print
 		if(pattern!=NULL){
 			if(reg_find(pattern,pid_cmdline)==0){
 				print_info(&conn,pid_cmdline);
@@ -59,18 +60,18 @@ void tcp(char *pattern){
 	/*start parsing "/proc/net/tcp6"*/
 	f = fopen("/proc/net/tcp6","r");
 	//deprecate redundant line
-	fgets(buf,BUFFSIZE,f);
+	fgets(buf,BUFSIZE,f);
 	
 	//parsing every line
-	while(fgets(buf,BUFFSIZE,f)!=NULL){
+	while(fgets(buf,BUFSIZE,f)!=NULL){
 		parse_tcp4(&conn,buf);
 		pid = search_proc_by_inode(conn.inode);
 		//if find corresponding pid,then get cmdline
 		if(pid!=-1){
 			if(get_cmdline(pid,buf)==NULL){
-				sprintf(pid_cmdline,"%u/-",pid);
+				sprintf(pid_cmdline,"%d/-",pid);
 			}else{
-				sprintf(pid_cmdline,"%u/%s",pid,buf);
+				sprintf(pid_cmdline,"%d/%s",pid,buf);
 			}
 		}else{
 			sprintf(pid_cmdline,"-/-");
