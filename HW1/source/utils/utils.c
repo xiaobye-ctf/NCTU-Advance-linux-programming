@@ -25,9 +25,7 @@ void hex_to_ipv6(char *hex,char* str_ip){
 	i_ptr = (int*)&addr.s6_addr;
 	
 	sscanf(hex,"%8X%8X%8X%8X",&i_ptr[0],&i_ptr[1],&i_ptr[2],&i_ptr[3]);
-	for(i=0;i<4;i++){
-		printf("%X\n",i_ptr[i]);
-	}
+
     inet_ntop(AF_INET6,&addr,tmp,100);
 
     sscanf(tmp,"%s",str_ip);
