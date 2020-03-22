@@ -2,8 +2,17 @@
 #include"comm.h"
 #include"tcp.h"
 #include"utils.h"
-
-void tcp(){
+void print_info(CONN_RECORD *conn,char * pid_cmdline){
+	printf("local addr: %s:%d, remote addr: %s:%d, inode: %llu, pid/cmdline:%s\n",
+		    conn->l_ip,
+		    conn->l_port,
+			conn->r_ip,
+			conn->r_port,
+			conn->inode,
+			pid_cmdline
+	);
+}
+void tcp(char *pattern){
 	char buf[BUFFSIZE];
 	char pid_cmdline[2*BUFFSIZE];
 	CONN_RECORD conn;
@@ -19,6 +28,7 @@ void tcp(){
 	while(fgets(buf,BUFFSIZE,f)!=NULL){
 		parse_tcp4(&conn,buf);
 		pid = search_proc_by_inode(conn.inode);
+		//if find corresponding pid,then get cmdline
 		if(pid!=-1){
 			if(get_cmdline(pid,buf)==NULL){
 				sprintf(pid_cmdline,"%u/-",pid);
@@ -28,14 +38,16 @@ void tcp(){
 		}else{
 			sprintf(pid_cmdline,"-/-");
 		}
-		printf("local addr: %s:%d, remote addr: %s:%d, inode: %llu, pid/cmdline:%s\n",
-			    conn.l_ip,
-			    conn.l_port,
-				conn.r_ip,
-				conn.r_port,
-				conn.inode,
-				pid_cmdline
-		);
+
+		//matching
+		if(pattern!=NULL){
+			if(reg_find(pattern,pid_cmdline)==0){
+				print_info(&conn,pid_cmdline);
+			}
+		}else{
+			print_info(&conn,pid_cmdline);
+		}
+
 
 	}
 
@@ -44,6 +56,10 @@ void tcp(){
 }
 
 
-int main(void){
-	tcp();	
+int main(int argc,char**argv){
+	if(argc==2){
+		tcp(argv[1]);	
+	}else{
+		tcp(NULL);
+	}
 }
