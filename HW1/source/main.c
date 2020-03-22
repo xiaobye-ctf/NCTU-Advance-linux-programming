@@ -3,13 +3,27 @@
 #include"tcp.h"
 #include"udp.h"
 #include"utils.h"
-void print_info(CONN_RECORD *conn,char * pid_cmdline){
-	printf("local addr: %s:%d, remote addr: %s:%d, inode: %llu, pid/cmdline: %s\n",
-		    conn->l_ip,
-		    conn->l_port,
-			conn->r_ip,
-			conn->r_port,
-			conn->inode,
+void print_title(){
+	printf("%-5s %-39s %-39s %-50s\n",
+			"Proto",
+			"Local Address",
+			"Foreign Address",
+			"PID/Program name and arguments"
+	);
+}
+//if version is ' ',then it is ipv4
+void print_info(char* proto,char version,CONN_RECORD *conn,char * pid_cmdline){
+	char l_ip_p[100];
+	char r_ip_p[100];
+	char proto_v[10];
+
+	sprintf(l_ip_p,"%s:%d",conn->l_ip,conn->l_port);
+	sprintf(r_ip_p,"%s:%d",conn->r_ip,conn->r_port);
+	sprintf(proto_v,"%s%c",proto,version);
+	printf("%-5s %-39s %-39s %-50s\n",
+			proto_v,
+			l_ip_p,
+			r_ip_p,
 			pid_cmdline
 	);
 }
@@ -21,6 +35,7 @@ void udp(char *pattern){
 	FILE * f;
 	int pid=-1;
 	printf("UDP\n\n");
+	print_title();
 	/*start parsing "/proc/net/udp"*/
 	f = fopen("/proc/net/udp","r");
 	//deprecate redundant line
@@ -45,10 +60,10 @@ void udp(char *pattern){
 		//matching and print
 		if(pattern!=NULL){
 			if(reg_find(pattern,pid_cmdline)==0){
-				print_info(&conn,pid_cmdline);
+				print_info("udp",' ',&conn,pid_cmdline);
 			}
 		}else{
-			print_info(&conn,pid_cmdline);
+			print_info("udp",' ',&conn,pid_cmdline);
 		}
 
 
@@ -58,7 +73,6 @@ void udp(char *pattern){
 	/*end parsing "/proc/net/udp"*/
 
 
-	printf("\n\nUDP6\n\n");
 	/*start parsing "/proc/net/udp6"*/
 	f = fopen("/proc/net/udp6","r");
 	//deprecate redundant line
@@ -82,10 +96,10 @@ void udp(char *pattern){
 		//matching
 		if(pattern!=NULL){
 			if(reg_find(pattern,pid_cmdline)==0){
-				print_info(&conn,pid_cmdline);
+				print_info("udp",'6',&conn,pid_cmdline);
 			}
 		}else{
-			print_info(&conn,pid_cmdline);
+			print_info("udp",'6',&conn,pid_cmdline);
 		}
 
 
@@ -103,6 +117,7 @@ void tcp(char *pattern){
 	FILE * f;
 	int pid=-1;
 	printf("TCP\n\n");
+	print_title();
 	/*start parsing "/proc/net/tcp"*/
 	f = fopen("/proc/net/tcp","r");
 	//deprecate redundant line
@@ -127,10 +142,10 @@ void tcp(char *pattern){
 		//matching and print
 		if(pattern!=NULL){
 			if(reg_find(pattern,pid_cmdline)==0){
-				print_info(&conn,pid_cmdline);
+				print_info("tcp",' ',&conn,pid_cmdline);
 			}
 		}else{
-			print_info(&conn,pid_cmdline);
+			print_info("tcp",' ',&conn,pid_cmdline);
 		}
 
 
@@ -140,7 +155,6 @@ void tcp(char *pattern){
 	/*end parsing "/proc/net/tcp"*/
 
 
-	printf("\n\nTCP6\n\n");
 	/*start parsing "/proc/net/tcp6"*/
 	f = fopen("/proc/net/tcp6","r");
 	//deprecate redundant line
@@ -164,10 +178,10 @@ void tcp(char *pattern){
 		//matching
 		if(pattern!=NULL){
 			if(reg_find(pattern,pid_cmdline)==0){
-				print_info(&conn,pid_cmdline);
+				print_info("tcp",'6',&conn,pid_cmdline);
 			}
 		}else{
-			print_info(&conn,pid_cmdline);
+			print_info("tcp",'6',&conn,pid_cmdline);
 		}
 
 
