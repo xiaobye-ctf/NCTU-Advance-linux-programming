@@ -1,3 +1,4 @@
+#define BUFFSIZE 1024
 typedef struct{
     char l_ip[60];
     int l_port;

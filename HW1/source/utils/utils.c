@@ -96,3 +96,22 @@ int search_proc_by_inode(unsigned long long inode){
 
 }
 
+char* get_cmdline(int pid,char* cmdline){
+    char buf[200];
+    FILE *f; 
+    sprintf(buf,"/proc/%u/cmdline",pid);
+
+    f = fopen(buf,"r");
+	if(f==NULL){
+		perror(buf);
+		return NULL;
+	}
+	
+	fread(cmdline,BUFFSIZE-1,1,f);
+	cmdline[BUFFSIZE]='\0';
+
+    fclose(f);
+
+
+	return cmdline;
+}

@@ -3,7 +3,6 @@
 #include"tcp.h"
 #include"utils.h"
 
-#define BUFFSIZE 1024
 void tcp(){
 	char buf[BUFFSIZE];
 	CONN_RECORD conn;
@@ -19,6 +18,7 @@ void tcp(){
 	while(fgets(buf,BUFFSIZE,f)!=NULL){
 		parse_tcp4(&conn,buf);
 		pid = search_proc_by_inode(conn.inode);
+		
 		printf("local addr: %s:%d, remote addr: %s:%d, inode: %llu, pid:%d\n",
 			    conn.l_ip,
 			    conn.l_port,
