@@ -8,7 +8,7 @@
 #include<string.h>
 void hex_to_ipv6(char *hex,char* str_ip){
 	char str_ip6[4][9];
-	char buf[100];
+	char tmp[100];
 	int *i_ptr;
     struct in6_addr addr;
 	int i;
@@ -19,14 +19,15 @@ void hex_to_ipv6(char *hex,char* str_ip){
 	for(i=0;i<4;i++){
 		printf("%X\n",i_ptr[i]);
 	}
-    inet_ntop(AF_INET6,&addr,buf,100);
-	printf("%s\n",buf);
+    inet_ntop(AF_INET6,&addr,tmp,100);
 
-    //sscanf(tmp,"%s",str_ip);
+    sscanf(tmp,"%s",str_ip);
 }
 
 int main(void){
+	char ipv6[100];
 	printf("0000000000000000FFFF0000BF00A8C0\n");
-	hex_to_ipv6("0000000000000000FFFF0000BF00A8C0",NULL);
+	hex_to_ipv6("0000000000000000FFFF0000BF00A8C0",ipv6);
+	printf("%s\n",ipv6);
 }
 
