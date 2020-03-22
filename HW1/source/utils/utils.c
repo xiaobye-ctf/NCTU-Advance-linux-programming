@@ -71,6 +71,8 @@ int search_proc_by_inode(unsigned long long inode){
 #endif
 			sprintf(buf,"/proc/%s/fd",ent->d_name);
 			//satrt enumerating fds in "/proc/{pid}/fd"
+
+			if(euidaccess(buf,R_OK)!=0) continue;
 			d_fd = opendir(buf);
 			if(d_fd==NULL){
 				perror(buf);
