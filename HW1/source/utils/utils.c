@@ -123,22 +123,36 @@ int search_proc_by_inode(unsigned long long inode){
 }
 
 char* get_cmdline(int pid,char* cmdline){
-    char buf[200];
-    FILE *f;
+    char path_comm[200];
+	char path_cmdline[200];
+    FILE *f_comm,*f_cmdline;
 	long size;
-    sprintf(buf,"/proc/%u/comm",pid);
+	char buf[BUFSIZE],buf1[BUFSIZE];
+    sprintf(path_comm,"/proc/%u/comm",pid);
+	sprintf(path_cmdline,"/proc/%u/cmdline",pid);
 
-    f = fopen(buf,"r");
-	if(f==NULL){
-		perror(buf);
+    f_comm = fopen(path_comm,"r");
+	if(f_comm==NULL){
+		perror(path_comm);
 		return NULL;
 	}
-	
-	fgets(cmdline,BUFSIZE,f);
-	size = strlen(cmdline);
-	cmdline[size-1]='\0';
+	f_cmdline = fopen(path_cmdline,"r");
+	if(f_cmdline==NULL){
+		perror(path_comm);
+		return NULL;
+	}
+	fgets(buf,BUFSIZE,f_cmdline);
+	sscanf(buf,"%*[^ ]%*[ ]%[^\n]",buf1);
 
-    fclose(f);
+
+	fgets(buf,BUFSIZE,f_comm);
+	size = strlen(buf);
+	buf[size-1]='\0';
+
+	sprintf(cmdline,"%s %s",buf,buf1);
+
+	fclose(f_cmdline);
+    fclose(f_comm);
 
 
 	return cmdline;

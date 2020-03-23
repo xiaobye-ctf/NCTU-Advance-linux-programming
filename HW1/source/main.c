@@ -6,7 +6,7 @@
 #include"utils.h"
 
 void print_title(){
-	printf("%-5s %-39s %-39s %-50s\n",
+	printf("%-5s %-45s %-45s %-50s\n",
 			"Proto",
 			"Local Address",
 			"Foreign Address",
@@ -22,7 +22,7 @@ void print_info(char* proto,char version,CONN_RECORD *conn,char * pid_cmdline){
 	sprintf(l_ip_p,"%s:%d",conn->l_ip,conn->l_port);
 	sprintf(r_ip_p,"%s:%d",conn->r_ip,conn->r_port);
 	sprintf(proto_v,"%s%c",proto,version);
-	printf("%-5s %-39s %-39s %-50s\n",
+	printf("%-5s %-45s %-45s %-50s\n",
 			proto_v,
 			l_ip_p,
 			r_ip_p,
@@ -234,5 +234,6 @@ int main(int argc,char**argv){
 		tcp(argv[0]);
 		puts("");
 		udp(argv[0]);
-	}	
+	}
+	return 0;
 }
