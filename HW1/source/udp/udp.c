@@ -3,7 +3,7 @@
 #include"utils.h"
 
 void parse_udp4(CONN_RECORD* conn,char* line){
-	char l_i[40],l_p[10],r_i[40],r_p[10];
+	char l_i[40]={'\0'},l_p[10]={'\0'},r_i[40]={'\0'},r_p[10]={'\0'};
 	unsigned long long inod;
 	sscanf(line,"%*d:%*[ ]%[0-9A-F]:%[0-9A-F]%*[ ]%[0-9A-F]:%[0-9A-F]%*[ ]%*X%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%llu%*[ ]",
 		   l_i,
@@ -33,7 +33,7 @@ void parse_udp4(CONN_RECORD* conn,char* line){
 
 }
 void parse_udp6(CONN_RECORD* conn,char* line){
-    char l_i[40],l_p[10],r_i[40],r_p[10];
+    char l_i[40]={'\0'},l_p[10]={'\0'},r_i[40]={'\0'},r_p[10]={'\0'};
     unsigned long long inod;
     sscanf(line,"%*d:%*[ ]%[0-9A-F]:%[0-9A-F]%*[ ]%[0-9A-F]:%[0-9A-F]%*[ ]%*X%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%*[^ ]%*[ ]%llu%*[ ]",
            l_i,

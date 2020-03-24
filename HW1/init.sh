@@ -1,2 +1,2 @@
-cd source && make clean && make
+cd source && make clean && make || make
 

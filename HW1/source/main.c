@@ -15,9 +15,9 @@ void print_title(){
 }
 //if version is ' ',then it is ipv4
 void print_info(char* proto,char version,CONN_RECORD *conn,char * pid_cmdline){
-	char l_ip_p[100];
-	char r_ip_p[100];
-	char proto_v[10];
+	char l_ip_p[100]={'\0'};
+	char r_ip_p[100]={'\0'};
+	char proto_v[10]={'\0'};
 
 	sprintf(l_ip_p,"%s:%d",conn->l_ip,conn->l_port);
 	sprintf(r_ip_p,"%s:%d",conn->r_ip,conn->r_port);
@@ -31,8 +31,8 @@ void print_info(char* proto,char version,CONN_RECORD *conn,char * pid_cmdline){
 }
 
 void udp(char *pattern){
-	char buf[BUFSIZE];
-	char pid_cmdline[2*BUFSIZE];
+	char buf[BUFSIZE]={'\0'};
+	char pid_cmdline[2*BUFSIZE]={'\0'};
 	CONN_RECORD conn;
 	FILE * f;
 	int pid=-1;
@@ -113,8 +113,8 @@ void udp(char *pattern){
 }
 
 void tcp(char *pattern){
-	char buf[BUFSIZE];
-	char pid_cmdline[2*BUFSIZE];
+	char buf[BUFSIZE]={'\0'};
+	char pid_cmdline[2*BUFSIZE]={'\0'};
 	CONN_RECORD conn;
 	FILE * f;
 	int pid=-1;

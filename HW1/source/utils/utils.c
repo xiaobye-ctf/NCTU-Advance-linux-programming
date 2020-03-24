@@ -17,7 +17,7 @@ void hex_to_ipv4(char *hex,char* str_ip){
 }
 void hex_to_ipv6(char *hex,char* str_ip){
 	char str_ip6[4][9];
-	char tmp[60];
+	char tmp[60]={'\0'};
 	int *i_ptr;
     struct in6_addr addr;
 	int i;
@@ -123,11 +123,11 @@ int search_proc_by_inode(unsigned long long inode){
 }
 
 char* get_cmdline(int pid,char* cmdline){
-    char path_comm[200];
-	char path_cmdline[200];
+    char path_comm[200]={'\0'};
+	char path_cmdline[200]={'\0'};
     FILE *f_comm,*f_cmdline;
 	long size;
-	char buf[BUFSIZE],buf1[BUFSIZE];
+	char buf[BUFSIZE]={'\0'},buf1[BUFSIZE]={'\0'};
     sprintf(path_comm,"/proc/%u/comm",pid);
 	sprintf(path_cmdline,"/proc/%u/cmdline",pid);
 
