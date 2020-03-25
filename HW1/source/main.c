@@ -38,12 +38,16 @@ void udp(char **argv,int argc){
 	FILE * f;
 	int pid=-1;
 	printf("UDP\n");
+
+	//concatenate argv with space
+	argv_concat(argv,argc,pattern,sizeof(pattern)," ");
 	print_title();
+
 	/*start parsing "/proc/net/udp"*/
 	f = fopen("/proc/net/udp","r");
 	//deprecate redundant line
 	fgets(buf,BUFSIZE,f);
-	
+
 	//parsing every line
 	while(fgets(buf,BUFSIZE,f)!=NULL){
 		parse_udp4(&conn,buf);
@@ -59,10 +63,7 @@ void udp(char **argv,int argc){
 		}else{
 			sprintf(pid_cmdline,"-/-");
 		}
-		
-		//concatenate argv with space
-		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
-		
+			
 		//matching and print
 		if(argc!=0){
 			if(reg_find(pattern,pid_cmdline)==0){
@@ -99,8 +100,6 @@ void udp(char **argv,int argc){
 			sprintf(pid_cmdline,"-/-");
 		}
 
-		//concatenate argv with space
-		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
 
 		//matching
 		if(argc!=0){
@@ -132,7 +131,10 @@ void tcp(char **argv,int argc){
 	f = fopen("/proc/net/tcp","r");
 	//deprecate redundant line
 	fgets(buf,BUFSIZE,f);
-	
+
+	//concatenate argv with space
+	argv_concat(argv,argc,pattern,sizeof(pattern)," ");
+
 	//parsing every line
 	while(fgets(buf,BUFSIZE,f)!=NULL){
 		parse_tcp4(&conn,buf);
@@ -149,8 +151,6 @@ void tcp(char **argv,int argc){
 			sprintf(pid_cmdline,"-/-");
 		}
 
-		//concatenate argv with space
-		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
 		//matching and print
 		if(argc!=0){
 			if(reg_find(pattern,pid_cmdline)==0){
@@ -186,9 +186,6 @@ void tcp(char **argv,int argc){
 		}else{
 			sprintf(pid_cmdline,"-/-");
 		}
-
-		//concatenate argv with space
-		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
 
 		//matching
 		if(argc!=0){
