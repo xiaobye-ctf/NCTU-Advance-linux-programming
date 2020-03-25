@@ -27,7 +27,7 @@ void cmdline_preprocess(char *target,char *cmdline,int size){
 int main(void){
 	char buf[BUFSIZE];
 
-	cmdline_preprocess("/proc/26183/cmdline",buf,sizeof(buf));
+	cmdline_preprocess("/proc/26250/cmdline",buf,sizeof(buf));
 	printf("%s\n",buf);
 	return 0;
 }
