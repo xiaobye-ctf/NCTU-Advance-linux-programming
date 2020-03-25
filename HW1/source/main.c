@@ -30,9 +30,10 @@ void print_info(char* proto,char version,CONN_RECORD *conn,char * pid_cmdline){
 	);
 }
 
-void udp(char *pattern){
+void udp(char **argv,int argc){
 	char buf[BUFSIZE]={'\0'};
 	char pid_cmdline[2*BUFSIZE]={'\0'};
+	char pattern[2*BUFSIZE]={'\0'};
 	CONN_RECORD conn;
 	FILE * f;
 	int pid=-1;
@@ -58,9 +59,12 @@ void udp(char *pattern){
 		}else{
 			sprintf(pid_cmdline,"-/-");
 		}
-
+		
+		//concatenate argv with space
+		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
+		
 		//matching and print
-		if(pattern!=NULL){
+		if(argc!=0){
 			if(reg_find(pattern,pid_cmdline)==0){
 				print_info("udp",' ',&conn,pid_cmdline);
 			}
@@ -95,8 +99,11 @@ void udp(char *pattern){
 			sprintf(pid_cmdline,"-/-");
 		}
 
+		//concatenate argv with space
+		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
+
 		//matching
-		if(pattern!=NULL){
+		if(argc!=0){
 			if(reg_find(pattern,pid_cmdline)==0){
 				print_info("udp",'6',&conn,pid_cmdline);
 			}
@@ -112,9 +119,10 @@ void udp(char *pattern){
 
 }
 
-void tcp(char *pattern){
+void tcp(char **argv,int argc){
 	char buf[BUFSIZE]={'\0'};
 	char pid_cmdline[2*BUFSIZE]={'\0'};
+	char pattern[2*BUFSIZE]={'\0'};
 	CONN_RECORD conn;
 	FILE * f;
 	int pid=-1;
@@ -141,8 +149,10 @@ void tcp(char *pattern){
 			sprintf(pid_cmdline,"-/-");
 		}
 
+		//concatenate argv with space
+		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
 		//matching and print
-		if(pattern!=NULL){
+		if(argc!=0){
 			if(reg_find(pattern,pid_cmdline)==0){
 				print_info("tcp",' ',&conn,pid_cmdline);
 			}
@@ -177,8 +187,11 @@ void tcp(char *pattern){
 			sprintf(pid_cmdline,"-/-");
 		}
 
+		//concatenate argv with space
+		argv_concat(argv,argc,pattern,sizeof(pattern)," ");
+
 		//matching
-		if(pattern!=NULL){
+		if(argc!=0){
 			if(reg_find(pattern,pid_cmdline)==0){
 				print_info("tcp",'6',&conn,pid_cmdline);
 			}
@@ -227,13 +240,13 @@ int main(int argc,char**argv){
 #endif
 	dif=t-u;
 	if(dif==1){
-		tcp(argv[0]);
+		tcp(argv,argc);
 	}else if(dif==-1){
-		udp(argv[0]);
+		udp(argv,argc);
 	}else{
-		tcp(argv[0]);
+		tcp(argv,argc);
 		puts("");
-		udp(argv[0]);
+		udp(argv,argc);
 	}
 	return 0;
 }

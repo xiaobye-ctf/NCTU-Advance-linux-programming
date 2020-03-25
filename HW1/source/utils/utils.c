@@ -7,7 +7,6 @@
 #include<regex.h>
 #include<string.h>
 #include"comm.h"
-#include"utils.h"
 #include<unistd.h>
 void hex_to_ipv4(char *hex,char* str_ip){
     struct in_addr addr;
@@ -157,3 +156,28 @@ char* get_cmdline(int pid,char* cmdline){
 
 	return cmdline;
 }
+void argv_concat(char **argv,int argc,char* dst,int dst_size,char *sep){
+	int count=0;
+	int sep_len=0;
+	int i;
+	
+	//nothing in argv
+	if(argc==0)return;
+
+	sep_len = strlen(sep);
+	for(i=0;i<argc;i++){
+		count+=strlen(argv[i]);
+	}
+	if((count+sep_len*(argc-1))>dst_size){
+		fprintf(stderr,"Concat arguments failed!\n");
+		exit(1);
+	}
+
+
+	strcpy(dst,argv[0]);
+	for(i=1;i<argc;i++){
+		strcat(dst,sep);
+		strcat(dst,argv[i]);
+	}
+}
+
