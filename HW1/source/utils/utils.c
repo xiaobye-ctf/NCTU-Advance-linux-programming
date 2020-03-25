@@ -121,10 +121,33 @@ int search_proc_by_inode(unsigned long long inode){
 
 }
 
+void cmdline_preprocess(char *target,char *cmdline,int size){
+	char *buf = (char*)malloc(size);
+	FILE* f;
+	int i;
+
+	memset(buf,0,size);
+	f = fopen(target,"r");
+	if(f==NULL)exit(1);
+
+	fread(buf,size-1,1,f);
+
+	for(i=0;i<(size-1);i++){
+		if(!(buf[i]|buf[i+1])) break;
+
+		if(buf[i]=='\0') buf[i]=' ';
+	}
+	strcpy(cmdline,buf);
+
+	fclose(f);
+	free(buf);
+}
+
+
 char* get_cmdline(int pid,char* cmdline){
     char path_comm[200]={'\0'};
 	char path_cmdline[200]={'\0'};
-    FILE *f_comm,*f_cmdline;
+    FILE *f_comm;
 	long size;
 	char buf[BUFSIZE]={'\0'},buf1[BUFSIZE]={'\0'};
     sprintf(path_comm,"/proc/%u/comm",pid);
@@ -135,12 +158,7 @@ char* get_cmdline(int pid,char* cmdline){
 		perror(path_comm);
 		return NULL;
 	}
-	f_cmdline = fopen(path_cmdline,"r");
-	if(f_cmdline==NULL){
-		perror(path_comm);
-		return NULL;
-	}
-	fgets(buf,BUFSIZE,f_cmdline);
+	cmdline_preprocess(path_cmdline,buf,sizeof(buf));
 	sscanf(buf,"%*[^ ]%*[ ]%[^\n]",buf1);
 
 
@@ -150,7 +168,6 @@ char* get_cmdline(int pid,char* cmdline){
 
 	sprintf(cmdline,"%s %s",buf,buf1);
 
-	fclose(f_cmdline);
     fclose(f_comm);
 
 
