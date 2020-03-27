@@ -44,7 +44,7 @@ void udp(char **argv,int argc){
 	printf("UDP\n");
 
 	//concatenate argv with space
-	argv_concat(argv,argc,pattern,sizeof(pattern)," ");
+	argv_concat(argv,argc,pattern,sizeof(pattern),"[ ]+");
 	print_title();
 
 	/*start parsing "/proc/net/udp"*/
@@ -140,7 +140,7 @@ void tcp(char **argv,int argc){
 	fgets(buf,BUFSIZE,f);
 
 	//concatenate argv with space
-	argv_concat(argv,argc,pattern,sizeof(pattern)," ");
+	argv_concat(argv,argc,pattern,sizeof(pattern),"[ ]+");
 
 	//parsing every line
 	while(fgets(buf,BUFSIZE,f)!=NULL){
