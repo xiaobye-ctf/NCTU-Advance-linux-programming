@@ -13,25 +13,29 @@ void print_title(){
 			"PID/Program name and arguments"
 	);
 }
-//if version is ' ',then it is ipv4
-void print_info(char* proto,char version,CONN_RECORD *conn,char * pid_cmdline){
+
+void reg_preprocess(char* proto,char version,CONN_RECORD *conn,char * pid_cmdline,char *buf){
 	char l_ip_p[100]={'\0'};
 	char r_ip_p[100]={'\0'};
 	char proto_v[10]={'\0'};
-
 	sprintf(l_ip_p,"%s:%d",conn->l_ip,conn->l_port);
 	sprintf(r_ip_p,"%s:%d",conn->r_ip,conn->r_port);
 	sprintf(proto_v,"%s%c",proto,version);
-	printf("%-5s %-45s %-45s %-50s\n",
+	sprintf(buf,"%-5s %-45s %-45s %-50s",
 			proto_v,
 			l_ip_p,
 			r_ip_p,
 			pid_cmdline
 	);
 }
+//if version is ' ',then it is ipv4
+void print_info(char* buf){
+	printf("%s\n",buf);
+}
 
 void udp(char **argv,int argc){
 	char buf[BUFSIZE]={'\0'};
+	char output[BUFSIZE*2]={'\0'};
 	char pid_cmdline[2*BUFSIZE]={'\0'};
 	char pattern[2*BUFSIZE]={'\0'};
 	CONN_RECORD conn;
@@ -65,12 +69,13 @@ void udp(char **argv,int argc){
 		}
 			
 		//matching and print
+		reg_preprocess("udp",' ',&conn,pid_cmdline,output);
 		if(argc!=0){
-			if(reg_find(pattern,pid_cmdline)==0){
-				print_info("udp",' ',&conn,pid_cmdline);
+			if(reg_find(pattern,output)==0){
+				print_info(output);
 			}
 		}else{
-			print_info("udp",' ',&conn,pid_cmdline);
+			print_info(output);
 		}
 
 
@@ -102,12 +107,13 @@ void udp(char **argv,int argc){
 
 
 		//matching
+		reg_preprocess("udp",'6',&conn,pid_cmdline,output);
 		if(argc!=0){
-			if(reg_find(pattern,pid_cmdline)==0){
-				print_info("udp",'6',&conn,pid_cmdline);
+			if(reg_find(pattern,output)==0){
+				print_info(output);
 			}
 		}else{
-			print_info("udp",'6',&conn,pid_cmdline);
+			print_info(output);
 		}
 
 
@@ -120,6 +126,7 @@ void udp(char **argv,int argc){
 
 void tcp(char **argv,int argc){
 	char buf[BUFSIZE]={'\0'};
+	char output[BUFSIZE*2]={'\0'};
 	char pid_cmdline[2*BUFSIZE]={'\0'};
 	char pattern[2*BUFSIZE]={'\0'};
 	CONN_RECORD conn;
@@ -152,12 +159,13 @@ void tcp(char **argv,int argc){
 		}
 
 		//matching and print
+		reg_preprocess("tcp",' ',&conn,pid_cmdline,output);
 		if(argc!=0){
-			if(reg_find(pattern,pid_cmdline)==0){
-				print_info("tcp",' ',&conn,pid_cmdline);
+			if(reg_find(pattern,output)==0){
+				print_info(output);
 			}
 		}else{
-			print_info("tcp",' ',&conn,pid_cmdline);
+			print_info(output);
 		}
 
 
@@ -188,12 +196,13 @@ void tcp(char **argv,int argc){
 		}
 
 		//matching
+		reg_preprocess("tcp",'6',&conn,pid_cmdline,output);
 		if(argc!=0){
-			if(reg_find(pattern,pid_cmdline)==0){
-				print_info("tcp",'6',&conn,pid_cmdline);
+			if(reg_find(pattern,output)==0){
+				print_info(output);
 			}
 		}else{
-			print_info("tcp",'6',&conn,pid_cmdline);
+			print_info(output);
 		}
 
 
