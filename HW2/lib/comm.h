@@ -25,6 +25,7 @@ extern int debug;
 				return f(a1); \
 			}else{ \
 				FILE_OP_DENY(path); \
+				return 0;\
 			} \
 		}
 #define HOOK_ARG_2(func,path,ret,arg1,a1,arg2,a2)\
@@ -36,6 +37,7 @@ extern int debug;
 				return f(a1,a2); \
 			}else{ \
 				FILE_OP_DENY(path); \
+				return 0;\
 			} \
 		}
 //DC means Double Check.
@@ -49,6 +51,7 @@ extern int debug;
 				return f(a1,a2); \
 			}else{ \
 				FILE_OP_DENY(path1); \
+				return 0;\
 			} \
 		}
 
@@ -72,6 +75,7 @@ extern int debug;
 				return f(a1,a2,a3,a4); \
 			}else{ \
 				FILE_OP_DENY(path); \
+				return 0;\
 			} \
 		}
 
