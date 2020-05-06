@@ -12,4 +12,4 @@ sandbox.so:
 
 
 clean: 
-	rm *.o sandbox sandbox.so
+	rm *.o 
