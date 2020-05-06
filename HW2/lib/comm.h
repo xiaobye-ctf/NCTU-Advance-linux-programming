@@ -4,7 +4,7 @@ extern int debug;
 #define ENTER() printf("\e[33;1m[Enter %s()]\e[0m\n",__FUNCTION__)
 
 #define LOAD_FUNC(name) \
-	printf("Loading function %s\n",#name);\
+	if(debug)printf("Loading function %s\n",#name);\
 	real_##name = dlsym(libc_handle,#name);\
 	if(debug && real_##name == NULL)\
 		fprintf(stderr, "\e[5;31m%s\e[0m\n",dlerror());\

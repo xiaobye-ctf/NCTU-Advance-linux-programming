@@ -1,4 +1,3 @@
-#define _GNU_SOURCE
 #include <sys/wait.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -23,6 +22,6 @@ void config_env(const char * app_root,const char* debug){
 }
 int main(int argc,char **argv){
 	config_env("./","True");
-	printf("Finsh!\n");
+	system("./test_case");
 	return 0;
 }
