@@ -5,37 +5,24 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include<limits.h>
+#define HOOK_LIB "./sandbox.so"
 extern char **environ;
-int main(int argc,char **argv){
-	int pid;
-	int stat;
-	char* arg[]={"./test_case",NULL};
-	char *path;
-	char new_path[10000];
-	char ld_preload[PATH_MAX];
-	char * env[4]={NULL,NULL,NULL,NULL};
-	char *lib = "./sandbox.so";
+static char new_path[PATH_MAX];
+static char *path;
+static char * env[4]={NULL,NULL,NULL,NULL};
 
+void config_env(const char * app_root,const char* debug){
 	path = getenv("PATH");
-	sprintf(ld_preload,"LD_PRELOAD=%s",lib);
-	sprintf(new_path,"%s:./",path);
+	snprintf(new_path,PATH_MAX,"%s:./",path);
+	
+	setenv("LD_PRELOAD",HOOK_LIB,1);
+	setenv("PATH",new_path,1);
+	setenv("MY_APP_ROOT",app_root,1);
+	setenv("DEBUG",debug,1);//"True" or "False"
 
-	env[0]=new_path;
-	env[1]=ld_preload;
-	env[2]="MY_APP_ROOT=./";
-	if((pid=fork())<0){
-		perror("fork: ");
-		exit(-1);
-	}else if(pid > 0){
-#ifdef DEBUG
-		printf("parent: %d\n",getpid());
-
-#endif
-		wait(&stat);
-	}else{
-#ifdef DEBUG
-		printf("child: %d\n",getpid());
-#endif
-		execvpe("./test_case",arg,env);	
-	}	
+}
+int main(int argc,char **argv){
+	config_env("./","True");
+	printf("Finsh!\n");
+	return 0;
 }

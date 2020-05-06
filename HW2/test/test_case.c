@@ -38,7 +38,7 @@ int main() {
 	execv(FILE_A, argv);
 	execvp(FILE_A, argv);
 	execve(FILE_A, argv, NULL);
-	system("echo -n");
+	system("sleep 100");
 	return -1;
 }
 
