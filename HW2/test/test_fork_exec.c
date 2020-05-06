@@ -9,7 +9,7 @@ extern char **environ;
 int main(int argc,char **argv){
 	int pid;
 	int stat;
-	char* arg[]={"ls","-al","/home/xiaobye/Documents/linux/NCTU-Advance-linux-programming/HW2/test",NULL};
+	char* arg[]={"./test_case",NULL};
 	char *path;
 	char new_path[10000];
 	char ld_preload[PATH_MAX];
@@ -17,8 +17,8 @@ int main(int argc,char **argv){
 	char *lib = "./test.so";
 
 	path = getenv("PATH");
-	sprintf(new_path,"%s:./",path);
 	sprintf(ld_preload,"LD_PRELOAD=%s",lib);
+	sprintf(new_path,"%s:./",path);
 
 	env[0]=new_path;
 	env[1]=ld_preload;
@@ -36,6 +36,6 @@ int main(int argc,char **argv){
 #ifdef DEBUG
 		printf("child: %d\n",getpid());
 #endif
-		execvpe("ls",arg,env);	
+		execvpe("./test_case",arg,env);	
 	}	
 }
