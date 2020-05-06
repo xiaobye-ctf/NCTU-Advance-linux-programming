@@ -7,8 +7,13 @@
 #include<stdlib.h>
 #include<string.h>
 #define FILE_OP_DENY(name) printf("[sandbox] %s: access to %s is not allowed\n",__FUNCTION__,name)
-#define ENTER() printf("\e[0;33;1m[Enter %s()]\e[0m\n",__FUNCTION__)
+#define ENTER() printf("\e[33;1m[Enter %s()]\e[0m\n",__FUNCTION__)
 
+#define LOAD_FUNC(name) \
+	printf("Loading function %s\n",#name);\
+	real_##name = dlsym(libc_handle,#name);\
+	if(debug && real_##name == NULL)\
+		fprintf(stderr, "\e[5;31m%s\e[0m\n",dlerror());\
 
 #define HOOK_VAR(func)   static void* real_##func = NULL;
 #define MAKEFUNC(func,ret,...) ret (*f)(__VA_ARGS__) = (ret (*)(__VA_ARGS__)) real_##func;
@@ -20,7 +25,7 @@
 #define HOOK_ARG_1(func,path,ret,arg1,a1)\
 	HOOK_VAR(func)\
 		ret func(arg1 a1){ \
-			ENTER();\
+			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1)\
 			if(valid_access(path)){ \
 				return f(a1); \
@@ -31,7 +36,7 @@
 #define HOOK_ARG_2(func,path,ret,arg1,a1,arg2,a2)\
 	HOOK_VAR(func)\
 		ret func(arg1 a1,arg2 a2){ \
-			ENTER();\
+			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1,arg2)\
 			if(valid_access(path)){ \
 				return f(a1,a2); \
@@ -39,7 +44,19 @@
 				FILE_OP_DENY(path); \
 			} \
 		}
+#define HOOK_ARG_3(func,path,ret,arg1,a1,arg2,a2,arg3,a3)\
+	HOOK_VAR(func)\
+		ret func(arg1 a1,arg2 a2,arg3 a3){ \
+			if(debug)ENTER();\
+			MAKEFUNC(func,ret,arg1,arg2,arg3)\
+			if(valid_access(path)){ \
+				return f(a1,a2,a3); \
+			}else{ \
+				FILE_OP_DENY(path); \
+			} \
+		}
 
+static int debug=0;
 static void *libc_handle;
 static void hook_stop() __attribute__((destructor));
 static void hook_start() __attribute__((constructor));
@@ -51,9 +68,7 @@ int valid_access(const char* target){
 	char real_target[PATH_MAX];
 	int len_real_root;
 	int len_real_target;
-#ifdef DEBUG
-	ENTER();
-#endif
+	if(debug) ENTER();
 	root = getenv("MY_APP_ROOT");
 	if(root==NULL){
 		return 1;
@@ -63,11 +78,10 @@ int valid_access(const char* target){
 	realpath(target,real_target);
 	len_real_root = strlen(real_root);
 	len_real_target = strlen(real_target);
-#ifdef DEBUG
-	printf("\e[0;32;1mroot: %s, real root: %s\e[0m\n",root,real_root);
-	printf("\e[0;32;1mtarget: %s, target root: %s\e[0m\n",target,real_target);
-
-#endif
+	if(debug){
+		printf("\e[32;1mroot: %s, real root: %s\e[0m\n",root,real_root);
+		printf("\e[32;1mtarget: %s, target root: %s\e[0m\n",target,real_target);
+	}
 	if(len_real_target>=len_real_root && strncmp(real_root,real_target,len_real_target)==0){
 		return 1;	
 	}else{
@@ -86,33 +100,59 @@ HOOK_ARG_1(unlink,pathname,int,const char*,pathname)
 //int rmdir(const char *path);
 HOOK_ARG_1(rmdir,path,int,const char*,path)
 
-/**************/
-/*two argument*/
-/**************/
-//int stat(const char *pathname, struct stat *statbuf);
-HOOK_ARG_2(stat,pathname,int,const char*,pathname,struct stat*, statbuf)
-//int stat(const char *pathname, struct stat *statbuf);
+/***************/
+/*two arguments*/
+/***************/
+//int chmod(const char *  pathname, mode_t mode);
+HOOK_ARG_2(chmod,pathname,int,const char*,pathname,mode_t,mode)
+//int mkdir(const char * path, mode_t mode);
+HOOK_ARG_2(mkdir,path,int,const char*,path,mode_t,mode)
+//int creat(const char *path, mode_t mode);
+HOOK_ARG_2(creat,path,int,const char*,path,mode_t,mode)
+//int open(const char *pathname, int flags);
+HOOK_ARG_2(open,pathname,int,const char*,pathname,int,flags)
+//FILE *fopen(const char *filename, const char *mode)
+HOOK_ARG_2(fopen,filename,FILE*,const char*,filename,const char*, mode)
+
+//HOOK_ARG_2(stat,path,int,const char*,path,struct stat *,stat_buf)
+/*****************/
+/*three arguments*/
+/*****************/
+//int chown(const char *path, uid_t owner, gid_t group);
+HOOK_ARG_3(chown,path,int,const char *,path,uid_t,owner,gid_t,group)
+//ssize_t readlink(const char *path, char *buf, size_t bufsiz);
+HOOK_ARG_3(readlink,path,ssize_t,const char*,path,char*,buf,size_t,bufsiz)
+
 void hook_start(){
 #ifdef DEBUG
-	ENTER();
-	printf("Start hooking....\n");
-	printf("Start loading libc.so.6\n");
+	debug=1;
 #endif
-	if((libc_handle = dlopen("libc.so.6",RTLD_LAZY))==NULL){
-		printf("libc_handle: %llX",libc_handle);
-		printf("dlopen() error: %s\n",dlerror());
+	if(debug){
+		ENTER();
+		printf("Start hooking....\n");
+		printf("Start loading libc.so.6\n");
 	}
-	real_opendir = dlsym(libc_handle,"opendir");
-	real_remove = dlsym(libc_handle,"remove");
-	real_unlink = dlsym(libc_handle,"unlink");
-	real_rmdir = dlsym(libc_handle,"rmdir"); 
-	real_stat = dlsym(libc_handle,"stat");
+	if((libc_handle = dlopen("libc.so.6",RTLD_LAZY))==NULL){
+		fprintf(stderr,"libc_handle: %llX",libc_handle);
+		fprintf(stderr,"dlopen() error: %s\n",dlerror());
+	}
+	LOAD_FUNC(opendir);
+	LOAD_FUNC(remove);
+	LOAD_FUNC(unlink);
+	LOAD_FUNC(rmdir); 
+	LOAD_FUNC(chmod);
+	LOAD_FUNC(mkdir);
+	LOAD_FUNC(creat);
+	LOAD_FUNC(open);
+	LOAD_FUNC(fopen);
+	LOAD_FUNC(chown);
+	LOAD_FUNC(readlink);
+	//LOAD_FUNC(stat);
 }
 
 void hook_stop(){
-#ifdef DEBUG
-	ENTER();
-	printf("Stop hooking....\n");
-#endif
-
+	if(debug){
+		ENTER();
+		printf("Stop hooking....\n");
+	}
 }
