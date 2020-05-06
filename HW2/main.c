@@ -4,13 +4,25 @@
 #include<stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include<limits.h>
 extern char **environ;
 int main(int argc,char **argv){
 	int pid;
 	int stat;
-	char* arg[]={"ls","-al",NULL};
-//char* env[]={"PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/xiaobye/.local:/sbin",NULL};
-	char * env[]={"A=1",NULL};
+	char* arg[]={"./test_case",NULL};
+	char *path;
+	char new_path[10000];
+	char ld_preload[PATH_MAX];
+	char * env[4]={NULL,NULL,NULL,NULL};
+	char *lib = "./sandbox.so";
+
+	path = getenv("PATH");
+	sprintf(ld_preload,"LD_PRELOAD=%s",lib);
+	sprintf(new_path,"%s:./",path);
+
+	env[0]=new_path;
+	env[1]=ld_preload;
+	env[2]="MY_APP_ROOT=./";
 	if((pid=fork())<0){
 		perror("fork: ");
 		exit(-1);
@@ -24,7 +36,6 @@ int main(int argc,char **argv){
 #ifdef DEBUG
 		printf("child: %d\n",getpid());
 #endif
-		execvpe("ls",arg,NULL);	
-		sleep(100);
+		execvpe("./test_case",arg,env);	
 	}	
 }
