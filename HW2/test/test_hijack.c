@@ -44,6 +44,20 @@
 				FILE_OP_DENY(path); \
 			} \
 		}
+//DC means Double Check.
+//Check for what?Both two path argument.
+#define HOOK_ARG_2_DC(func,path1,path2,ret,arg1,a1,arg2,a2)\
+	HOOK_VAR(func)\
+		ret func(arg1 a1,arg2 a2){ \
+			if(debug)ENTER();\
+			MAKEFUNC(func,ret,arg1,arg2)\
+			if(valid_access(path1) && valid_access(path2)){ \
+				return f(a1,a2); \
+			}else{ \
+				FILE_OP_DENY(path1); \
+			} \
+		}
+
 #define HOOK_ARG_3(func,path,ret,arg1,a1,arg2,a2,arg3,a3)\
 	HOOK_VAR(func)\
 		ret func(arg1 a1,arg2 a2,arg3 a3){ \
@@ -55,6 +69,18 @@
 				FILE_OP_DENY(path); \
 			} \
 		}
+#define HOOK_ARG_4(func,path,ret,arg1,a1,arg2,a2,arg3,a3,arg4,a4)\
+	HOOK_VAR(func)\
+		ret func(arg1 a1,arg2 a2,arg3 a3,arg4 a4){ \
+			if(debug)ENTER();\
+			MAKEFUNC(func,ret,arg1,arg2,arg3,arg4)\
+			if(valid_access(path)){ \
+				return f(a1,a2,a3,a4); \
+			}else{ \
+				FILE_OP_DENY(path); \
+			} \
+		}
+
 
 static int debug=0;
 static void *libc_handle;
@@ -99,6 +125,8 @@ HOOK_ARG_1(opendir,name,DIR*,const char*,name)
 HOOK_ARG_1(unlink,pathname,int,const char*,pathname)
 //int rmdir(const char *path);
 HOOK_ARG_1(rmdir,path,int,const char*,path)
+//int chdir(const char *path);
+HOOK_ARG_1(chdir,path,int,const char*,path)
 
 /***************/
 /*two arguments*/
@@ -114,6 +142,17 @@ HOOK_ARG_2(open,pathname,int,const char*,pathname,int,flags)
 //FILE *fopen(const char *filename, const char *mode)
 HOOK_ARG_2(fopen,filename,FILE*,const char*,filename,const char*, mode)
 
+
+/******************************/
+/*two arguments(special cases)*/
+/******************************/
+//int rename(const char *old, const char *new);
+HOOK_ARG_2_DC(rename,old,new,int,const char*,old,const char*,new)
+//int symlink(const char *path1, const char *path2);
+HOOK_ARG_2_DC(symlink,path1,path2,int,const char*,path1,const char*,path2)
+//int link(const char * path1, const char *path2);
+HOOK_ARG_2_DC(link,path1,path2,int,const char *,path1,const char*,path2)
+
 //HOOK_ARG_2(stat,path,int,const char*,path,struct stat *,stat_buf)
 /*****************/
 /*three arguments*/
@@ -122,6 +161,15 @@ HOOK_ARG_2(fopen,filename,FILE*,const char*,filename,const char*, mode)
 HOOK_ARG_3(chown,path,int,const char *,path,uid_t,owner,gid_t,group)
 //ssize_t readlink(const char *path, char *buf, size_t bufsiz);
 HOOK_ARG_3(readlink,path,ssize_t,const char*,path,char*,buf,size_t,bufsiz)
+//int __xstat(int ver, const char * path, struct stat * stat_buf);
+HOOK_ARG_3(__xstat,path,int,int,ver,const char *,path,struct stat*,stat_buf)
+
+
+/*****************/
+/*four arguments*/
+/*****************/
+//int openat(int dirfd, const char *pathname, int flags,mode_t mode)
+HOOK_ARG_4(openat,pathname,int,int,dirfd,const char*,pathname,int,flags,mode_t,mode);
 
 void hook_start(){
 #ifdef DEBUG
@@ -140,6 +188,7 @@ void hook_start(){
 	LOAD_FUNC(remove);
 	LOAD_FUNC(unlink);
 	LOAD_FUNC(rmdir); 
+	LOAD_FUNC(chdir);
 	LOAD_FUNC(chmod);
 	LOAD_FUNC(mkdir);
 	LOAD_FUNC(creat);
@@ -147,6 +196,11 @@ void hook_start(){
 	LOAD_FUNC(fopen);
 	LOAD_FUNC(chown);
 	LOAD_FUNC(readlink);
+	LOAD_FUNC(__xstat);
+	LOAD_FUNC(openat);
+	LOAD_FUNC(rename);
+	LOAD_FUNC(symlink);
+	LOAD_FUNC(link);
 	//LOAD_FUNC(stat);
 }
 

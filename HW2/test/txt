@@ -1,0 +1,17 @@
+int chown(const char *path, uid_t owner, gid_t group);
+FILE *fopen(const char *filename, const char *mode)
+int openat(int dirfd, const char *pathname, int flags,mode_t mode)
+int chdir(const char *path);
+int open(const char *pathname, int flags);
+int creat(const char *path, mode_t mode);
+int mkdir(const char *   path, mode_t mode);
+int remove(const char *filename)
+DIR *opendir(const char *name);
+int unlink(const char *pathname);
+int rmdir(const char *path);
+int chmod(const char *  pathname, mode_t mode);
+ssize_t readlink(const char *path, char *buf, size_t bufsiz);
+int __xstat(int ver, const char * path, struct stat * stat_buf);
+int rename(const char *old, const char *new);
+int symlink(const char *path1, const char *path2);
+int link(const char *   path1, const char *path2);
