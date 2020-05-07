@@ -1,3 +1,4 @@
-make CFLAGS=-DDEBUG
+#make CFLAGS=-DDEBUG
+make
 make clean
 ./sandbox

@@ -79,3 +79,12 @@ extern int debug;
 			} \
 		}
 
+#define EXEC_OP_DENY(name) printf("[sandbox] %s(\"%s\"): not allowed\n",__FUNCTION__,name)
+
+#define HOOK_EXEC(func,path,ret,...)\
+	ret func(__VA_ARGS__){\
+		if(debug)ENTER();\
+		EXEC_OP_DENY(path);\
+		return -1;\
+	}
+

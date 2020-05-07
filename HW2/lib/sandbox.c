@@ -72,22 +72,24 @@ HOOK_ARG_3(__xstat,path,int,int,ver,const char *,path,struct stat*,stat_buf)
 //int openat(int dirfd, const char *pathname, int flags,mode_t mode)
 HOOK_ARG_4(openat,pathname,int,int,dirfd,const char*,pathname,int,flags,mode_t,mode);
 
+/****************/
+/*exec functions*/
+/****************/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//int execl(const char *path, const char *arg, ...);
+HOOK_EXEC(execl,path,int,const char*path,const char*arg,...)
+//int execlp(const char *file, const char *arg, ...);
+HOOK_EXEC(execlp,file,int,const char*file,const char*arg,...)
+//int execle (const char *__path, const char *__arg, ...)
+HOOK_EXEC(execle,__path,int,const char *__path, const char *__arg, ...)
+//int execv(const char *path, char *const argv[]);
+HOOK_EXEC(execv,path,int,const char *path, char *const argv[])
+//int execvp(const char *file, char *const argv[]);
+HOOK_EXEC(execvp,file,int,const char *file, char *const argv[])
+//int system(const char *command)
+HOOK_EXEC(system,command,int,const char *command)
+//int execve(const char *pathname, char *const argv[],char *const envp[]);
+HOOK_EXEC(execve,pathname,int,const char *pathname, char *const argv[],char *const envp[])
 
 
 
