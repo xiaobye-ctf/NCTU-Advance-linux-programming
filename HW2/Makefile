@@ -3,7 +3,7 @@ CC = gcc
 all: sandbox sandbox.so
 
 sandbox:
-	$(CC) main.c -o sandbox
+	$(CC) main.c -o sandbox $(CFLAGS)
 sandbox.so:
 	$(CC) -c ./lib/sandbox.c -fpic $(CFLAGS)
 	$(CC) -c ./lib/utils.c -fpic $(CFLAGS)

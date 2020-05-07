@@ -94,9 +94,8 @@ HOOK_EXEC(execve,pathname,int,const char *pathname, char *const argv[],char *con
 
 
 void hook_start(){
-#ifdef DEBUG
-	debug=1;
-#endif
+	if(strncmp("True",getenv("MY_DEBUG"),4)==0) debug=1;
+	else debug=0;
 	if(debug){
 		ENTER();
 		printf("Start hooking....\n");
