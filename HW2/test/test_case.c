@@ -15,7 +15,7 @@ int main() {
 	struct stat st;
 	char *argv[] = { FILE_A, NULL };
 	char buf[128];
-	chdir("../");
+	chdir("./");
 	chmod(FILE_A, 0644);
 	chown(FILE_A, 0, 0);
 	creat(FILE_A, O_RDONLY);
