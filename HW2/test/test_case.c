@@ -30,6 +30,7 @@ int main() {
 	rename(FILE_A, FILE_B);
 	rmdir(FILE_A);
 	stat(FILE_NULL, &st);
+	lstat(FILE_NULL, &st);
 	symlink(FILE_A, FILE_B);
 	unlink(FILE_A);
 	execl(FILE_A, FILE_A, NULL);

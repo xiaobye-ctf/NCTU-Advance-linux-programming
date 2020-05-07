@@ -24,7 +24,7 @@ int valid_access(const char* target){
 		printf("\e[32;1mroot: %s, real root: %s\e[0m\n",root,real_root);
 		printf("\e[32;1mtarget: %s, target root: %s\e[0m\n",target,real_target);
 	}
-	if(len_real_target>=len_real_root && strncmp(real_root,real_target,len_real_target)==0){
+	if(len_real_target>=len_real_root && strncmp(real_root,real_target,len_real_root)==0){
 		return 1;	
 	}else{
 		return 0;

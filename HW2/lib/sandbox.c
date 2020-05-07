@@ -20,14 +20,18 @@ static void hook_start() __attribute__((constructor));
 /**************/
 //DIR *opendir(const char *name);
 HOOK_ARG_1(remove,filename,int,const char*,filename)
-//int remove(const char *filename)
-HOOK_ARG_1(opendir,name,DIR*,const char*,name)
 //int unlink(const char *pathname);
 HOOK_ARG_1(unlink,pathname,int,const char*,pathname)
 //int rmdir(const char *path);
 HOOK_ARG_1(rmdir,path,int,const char*,path)
 //int chdir(const char *path);
 HOOK_ARG_1(chdir,path,int,const char*,path)
+
+/****************************/
+/*one argument(special case)*/
+/****************************/
+//int remove(const char *filename)
+HOOK_ARG_1_NUL(opendir,name,DIR*,const char*,name)
 
 /***************/
 /*two arguments*/
@@ -38,10 +42,16 @@ HOOK_ARG_2(chmod,pathname,int,const char*,pathname,mode_t,mode)
 HOOK_ARG_2(mkdir,path,int,const char*,path,mode_t,mode)
 //int creat(const char *path, mode_t mode);
 HOOK_ARG_2(creat,path,int,const char*,path,mode_t,mode)
-//int open(const char *pathname, int flags);
-HOOK_ARG_2(open,pathname,int,const char*,pathname,int,flags)
+//int creat64(const char *path, mode_t mode);
+HOOK_ARG_2(creat64,path,int,const char*,path,mode_t,mode)
+
+/*****************************/
+/*two arguments(special case)*/
+/*****************************/
 //FILE *fopen(const char *filename, const char *mode)
-HOOK_ARG_2(fopen,filename,FILE*,const char*,filename,const char*, mode)
+HOOK_ARG_2_NUL(fopen,filename,FILE*,const char*,filename,const char*, mode)
+//FILE *fopen64(const char *filename, const char *mode)
+HOOK_ARG_2_NUL(fopen64,filename,FILE*,const char*,filename,const char*, mode)
 
 
 /******************************/
@@ -53,8 +63,12 @@ HOOK_ARG_2_DC(rename,old,new,int,const char*,old,const char*,new)
 HOOK_ARG_2_DC(symlink,path1,path2,int,const char*,path1,const char*,path2)
 //int link(const char * path1, const char *path2);
 HOOK_ARG_2_DC(link,path1,path2,int,const char *,path1,const char*,path2)
+//int open(const char *pathname, int flags);
+HOOK_ARG_2(open,pathname,int,const char*,pathname,int,flags)
+//int open64(const char *pathname, int flags);
+HOOK_ARG_2(open64,pathname,int,const char*,pathname,int,flags)
 
-//HOOK_ARG_2(stat,path,int,const char*,path,struct stat *,stat_buf)
+
 /*****************/
 /*three arguments*/
 /*****************/
@@ -64,6 +78,9 @@ HOOK_ARG_3(chown,path,int,const char *,path,uid_t,owner,gid_t,group)
 HOOK_ARG_3(readlink,path,ssize_t,const char*,path,char*,buf,size_t,bufsiz)
 //int __xstat(int ver, const char * path, struct stat * stat_buf);
 HOOK_ARG_3(__xstat,path,int,int,ver,const char *,path,struct stat*,stat_buf)
+//int __xstat64(int ver, const char * path, struct stat * stat_buf);
+HOOK_ARG_3(__xstat64,path,int,int,ver,const char *,path,struct stat*,stat_buf)
+
 
 
 /*****************/
@@ -71,6 +88,8 @@ HOOK_ARG_3(__xstat,path,int,int,ver,const char *,path,struct stat*,stat_buf)
 /*****************/
 //int openat(int dirfd, const char *pathname, int flags,mode_t mode)
 HOOK_ARG_4(openat,pathname,int,int,dirfd,const char*,pathname,int,flags,mode_t,mode);
+//int openat(int dirfd, const char *pathname, int flags,mode_t mode)
+HOOK_ARG_4(openat64,pathname,int,int,dirfd,const char*,pathname,int,flags,mode_t,mode);
 
 /****************/
 /*exec functions*/
@@ -113,16 +132,20 @@ void hook_start(){
 	LOAD_FUNC(chmod);
 	LOAD_FUNC(mkdir);
 	LOAD_FUNC(creat);
+	LOAD_FUNC(creat64);
 	LOAD_FUNC(open);
 	LOAD_FUNC(fopen);
 	LOAD_FUNC(chown);
 	LOAD_FUNC(readlink);
 	LOAD_FUNC(__xstat);
+	LOAD_FUNC(__xstat64);
 	LOAD_FUNC(openat);
 	LOAD_FUNC(rename);
 	LOAD_FUNC(symlink);
 	LOAD_FUNC(link);
-	//LOAD_FUNC(stat);
+	LOAD_FUNC(openat64);
+	LOAD_FUNC(fopen64);
+	LOAD_FUNC(open64);
 }
 
 void hook_stop(){

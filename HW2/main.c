@@ -10,11 +10,19 @@ static char new_path[PATH_MAX];
 static char *path;
 static char * env[4]={NULL,NULL,NULL,NULL};
 void config_env(const char * app_root,const char *hook_lib,const char* debug){
+#ifdef DEBUG
+	printf("LD_PRELOAD: %s\n",hook_lib);
+	printf("MY_APP_ROOT: %s\n",app_root);
+	printf("MY_DEBUG: %s\n",debug);
+#endif
 	setenv("LD_PRELOAD",hook_lib,1);
 	setenv("MY_APP_ROOT",app_root,1);
 	setenv("MY_DEBUG",debug,1);//"True" or "False"
 }
 void exec_cmd(char **argv){
+#ifdef DEBUG
+	printf("path: %s , arg: %s:%llx,%s:%llx\n",argv[optind],argv[optind+1],argv[optind+1],argv[optind+2],argv[optind+2]);
+#endif
 	execvp(argv[optind++],&argv[optind]);
 }
 
