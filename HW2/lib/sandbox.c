@@ -14,7 +14,8 @@ static void *libc_handle=NULL;
 
 //validate access right
 int valid_access(const char* target){
-	char* root,*real_root,*real_target;
+	char* root;
+	char real_root[PATH_MAX],real_target[PATH_MAX];
 	int len_real_root,len_real_target;
 	if(debug) ENTER();
 	root = getenv("XIAOBYE_SANDBOX_ROOT");
@@ -23,16 +24,9 @@ int valid_access(const char* target){
 		return 1;
 	}
 	
-	real_root=realpath(root,NULL);
-	if(real_root==NULL){
-		return 0;
-	}
+	realpath(root,real_root);
+	realpath(target,real_target);
 
-	real_target=realpath(target,NULL);
-	if(real_target==NULL){
-		free(real_root);
-		return 0;
-	}
 	len_real_root = strlen(real_root);
 	len_real_target = strlen(real_target);
 
@@ -42,13 +36,9 @@ int valid_access(const char* target){
 	}
 
 	if((len_real_target>=len_real_root) && (strncmp(real_target,real_root,len_real_root)==0)){
-		free(real_root);
-		free(real_target);
 		if(debug) printf("\e[34;1mAccess allow!\e[0m\n");
 		return 1;	
 	}else{
-		free(real_root);
-		free(real_target);
 		if(debug) printf("\e[34;1mAccess deny!\e[0m\n");
 		return 0;
 	}

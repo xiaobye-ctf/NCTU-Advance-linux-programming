@@ -2,9 +2,12 @@
 #define FILE_OP_DENY(name) printf("[sandbox] %s: access to %s is not allowed\n",__FUNCTION__,name)
 #define ENTER() printf("\e[33;1m[Enter %s()]\e[0m\n",__FUNCTION__)
 
-#define MAKEFUNC(func,ret,...) ret (*real_##func)(__VA_ARGS__) = NULL;
+#define MAKEFUNC(func,ret,...) static ret (*real_##func)(__VA_ARGS__) = NULL;
 #define LOAD_FUNC(name) \
-	if(libc_handle==NULL)libc_handle=dlopen("libc.so.6",RTLD_LAZY);\
+	if(libc_handle==NULL){\
+		libc_handle=dlopen("libc.so.6",RTLD_LAZY);\
+		if(libc_handle==NULL)fprintf(stderr,"dlopen error:%s\n",dlerror());\
+	}\
 	if(real_##name==NULL){\
 		if(debug)printf("Loading function %s\n",#name);\
 		real_##name = dlsym(libc_handle,#name);\

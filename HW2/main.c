@@ -8,27 +8,32 @@
 
 static char new_path[PATH_MAX];
 static char *path;
-void config_env(const char * app_root,const char *hook_lib,const char* debug){
-	setenv("LD_PRELOAD",hook_lib,1);
+void  exec_cmd(int argc,char **argv,const char * app_root,const char *hook_lib,const char* debug){
+	char cmd[10000];
+	char tmp[10000];
+	if(argc==optind){
+		fprintf(stderr,"no command given.\n");
+		exit(1);
+	}
 	setenv("XIAOBYE_SANDBOX_ROOT",app_root,1);
 	setenv("XIAOBYE_DEBUG",debug,1);//"True" or "False"
 #ifdef DEBUG
-	printf("LD_PRELOAD: %s\n",getenv("LD_PRELOAD"));
 	printf("XIAOBYE_SANDBOX_ROOT: %s\n",getenv("XIAOBYE_SANDBOX_ROOT"));
 	printf("XIAOBYE_DEBUG: %s\n",getenv("XIAOBYE_DEBUG"));
 #endif
-}
-void exec_cmd(char **argv){
+	snprintf(cmd,10000,"LD_PRELOAD=%s",hook_lib);
+	for(;optind<argc;optind++){
+		snprintf(tmp,10000,"%s %s",cmd,argv[optind]);
+		snprintf(cmd,10000,"%s",tmp);
+	}
+	
 #ifdef DEBUG
-	printf("path: %s , arg: %s:%llx,%s:%llx\n",argv[optind],argv[optind+1],argv[optind+1],argv[optind+2],argv[optind+2]);
+	printf("cmd: %s\n",cmd);
 #endif
-	execvp(argv[optind],&argv[optind]);
+	system(cmd);
 }
 
-int getopt(int argc, char * const argv[],const char *optstring);
 int main(int argc,char **argv){
-	int pid;
-	int stat;
 	char *plib = "./sandbox.so";
 	char *app_root = "./";
 	char *debug = "False";
@@ -55,15 +60,7 @@ int main(int argc,char **argv){
                 exit(EXIT_FAILURE);
         }
     }
-	config_env(app_root,plib,debug);
-	if((pid=fork())<0){
-		perror("fork: ");
-		exit(-1);
-	}else if(pid > 0){
-		wait(&stat);
-	}else{
-		exec_cmd(argv);
-	}
+	exec_cmd(argc,argv,app_root,plib,debug);
 
 	return 0;
 }
