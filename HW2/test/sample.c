@@ -15,7 +15,7 @@ int main() {
 	struct stat st;
 	char *argv[] = { FILE_A, NULL };
 	char buf[128];
-	chdir("./");
+	chdir(".");
 	chmod(FILE_A, 0644);
 	chown(FILE_A, 0, 0);
 	creat(FILE_A, O_RDONLY);
@@ -30,7 +30,6 @@ int main() {
 	rename(FILE_A, FILE_B);
 	rmdir(FILE_A);
 	stat(FILE_NULL, &st);
-	lstat(FILE_NULL, &st);
 	symlink(FILE_A, FILE_B);
 	unlink(FILE_A);
 	execl(FILE_A, FILE_A, NULL);
@@ -39,7 +38,6 @@ int main() {
 	execv(FILE_A, argv);
 	execvp(FILE_A, argv);
 	execve(FILE_A, argv, NULL);
-	system("sleep 100");
+	system("echo -n");
 	return -1;
 }
-
