@@ -21,11 +21,11 @@
 			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1)\
 			if(valid_access(path)){ \
-				return f(a1); \
+				if(f!=NULL)return f(a1); \
 			}else{ \
 				FILE_OP_DENY(path); \
-				return -1;\
 			} \
+			return -1;\
 		}
 #define HOOK_ARG_1_NUL(func,path,ret,arg1,a1)\
 	HOOK_VAR(func)\
@@ -33,11 +33,11 @@
 			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1)\
 			if(valid_access(path)){ \
-				return f(a1); \
+				if(f!=NULL)return f(a1); \
 			}else{ \
 				FILE_OP_DENY(path); \
-				return 0;\
 			} \
+			return 0;\
 		}
 
 #define HOOK_ARG_2(func,path,ret,arg1,a1,arg2,a2)\
@@ -46,11 +46,11 @@
 			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1,arg2)\
 			if(valid_access(path)){ \
-				return f(a1,a2); \
+				if(f!=NULL)return f(a1,a2); \
 			}else{ \
 				FILE_OP_DENY(path); \
-				return -1;\
 			} \
+			return -1;\
 		}
 //Have to return NULL
 #define HOOK_ARG_2_NUL(func,path,ret,arg1,a1,arg2,a2)\
@@ -59,11 +59,11 @@
 			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1,arg2)\
 			if(valid_access(path)){ \
-				return f(a1,a2); \
+				if(f!=NULL)return f(a1,a2); \
 			}else{ \
 				FILE_OP_DENY(path); \
-				return 0;\
 			} \
+			return 0;\
 		}
 
 //DC means Double Check.
@@ -74,11 +74,11 @@
 			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1,arg2)\
 			if(valid_access(path1) && valid_access(path2)){ \
-				return f(a1,a2); \
+				if(f!=NULL)return f(a1,a2); \
 			}else{ \
 				FILE_OP_DENY(path1); \
-				return -1;\
 			} \
+			return -1;\
 		}
 
 #define HOOK_ARG_3(func,path,ret,arg1,a1,arg2,a2,arg3,a3)\
@@ -87,11 +87,11 @@
 			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1,arg2,arg3)\
 			if(valid_access(path)){ \
-				return f(a1,a2,a3); \
+				if(f!=NULL)return f(a1,a2,a3); \
 			}else{ \
 				FILE_OP_DENY(path); \
-				return -1;\
 			} \
+			return -1;\
 		}
 #define HOOK_ARG_4(func,path,ret,arg1,a1,arg2,a2,arg3,a3,arg4,a4)\
 	HOOK_VAR(func)\
@@ -99,11 +99,11 @@
 			if(debug)ENTER();\
 			MAKEFUNC(func,ret,arg1,arg2,arg3,arg4)\
 			if(valid_access(path)){ \
-				return f(a1,a2,a3,a4); \
+				if(f!=NULL)return f(a1,a2,a3,a4); \
 			}else{ \
 				FILE_OP_DENY(path); \
-				return -1;\
 			} \
+			return -1;\
 		}
 
 #define EXEC_OP_DENY(name) printf("[sandbox] %s(\"%s\"): not allowed\n",__FUNCTION__,name)
