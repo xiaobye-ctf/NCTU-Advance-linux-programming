@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <sys/stat.h>
 #include<dlfcn.h>
 #include <dirent.h>
@@ -17,13 +18,21 @@ int valid_access(const char* target){
 	int len_real_root,len_real_target;
 	if(debug) ENTER();
 	root = getenv("XIAOBYE_SANDBOX_ROOT");
-	if(root==NULL){
-		printf("no root!??\n");
+	if(root==NULL||target == NULL){
+		printf("no root or target!??\n");
 		return 1;
 	}
-
+	
 	real_root=realpath(root,NULL);
+	if(real_root==NULL){
+		return 0;
+	}
+
 	real_target=realpath(target,NULL);
+	if(real_target==NULL){
+		free(real_root);
+		return 0;
+	}
 	len_real_root = strlen(real_root);
 	len_real_target = strlen(real_target);
 
@@ -32,7 +41,7 @@ int valid_access(const char* target){
 		printf("\e[32;1mtarget: %s, real target: %s\e[0m\n",target,real_target);
 	}
 
-	if((len_real_target>=len_real_root) && (memcmp(real_target,real_root,len_real_root)==0)){
+	if((len_real_target>=len_real_root) && (strncmp(real_target,real_root,len_real_root)==0)){
 		free(real_root);
 		free(real_target);
 		if(debug) printf("\e[34;1mAccess allow!\e[0m\n");
@@ -109,9 +118,8 @@ HOOK_ARG_3(chown,path,int,const char *,path,uid_t,owner,gid_t,group)
 HOOK_ARG_3(readlink,path,ssize_t,const char*,path,char*,buf,size_t,bufsiz)
 //int __xstat(int ver, const char * path, struct stat * stat_buf);
 HOOK_ARG_3(__xstat,path,int,int,ver,const char *,path,struct stat*,stat_buf)
-//int __xstat64(int ver, const char * path, struct stat * stat_buf);
+//int __xstat64(int ver, const char * path, struct stat64 * stat_buf);
 HOOK_ARG_3(__xstat64,path,int,int,ver,const char *,path,struct stat*,stat_buf)
-
 
 
 /*****************/
@@ -165,8 +173,8 @@ static __attribute__((constructor(101))) void hook_start(){
 	LOAD_FUNC(fopen);
 	LOAD_FUNC(chown);
 	LOAD_FUNC(readlink);
-	LOAD_FUNC(__xstat);
 	LOAD_FUNC(__xstat64);
+	LOAD_FUNC(__xstat);
 	LOAD_FUNC(openat);
 	LOAD_FUNC(rename);
 	LOAD_FUNC(symlink);
