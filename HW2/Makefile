@@ -1,15 +1,13 @@
 CC = gcc
 .PHONY: all sandbox sandbox.so clean
-all: sandbox sandbox.so
+all: sandbox.so sandbox
 
 sandbox:
-	$(CC) main.c -o sandbox $(CFLAGS)
+	$(CC) main.c  -o sandbox $(CFLAGS) -ldl
 sandbox.so:
-	$(CC) -c ./lib/sandbox.c -fpic $(CFLAGS)
-	$(CC) -c ./lib/utils.c -fpic $(CFLAGS)
-	$(CC) sandbox.o utils.o  -shared  -fPIC  -o sandbox.so -ldl $(CFLAGS)
+	$(CC) ./lib/sandbox.c  -shared  -fPIC  -o sandbox.so -ldl $(CFLAGS) 
 
 
 
 clean: 
-	rm *.o 
+	rm sandbox sanbox.so

@@ -6,13 +6,44 @@
 #include<limits.h>
 #include<stdlib.h>
 #include<string.h>
-#include"utils.h"
 #include"comm.h"
 
-int debug=0;
+static int debug=0;
 static void *libc_handle;
-static void hook_stop() __attribute__((destructor));
-static void hook_start() __attribute__((constructor));
+
+//validate access right
+int valid_access(const char* target){
+	char* root,*real_root,*real_target;
+	int len_real_root,len_real_target;
+	if(debug) ENTER();
+	root = getenv("XIAOBYE_SANDBOX_ROOT");
+	if(root==NULL){
+		printf("no root!??\n");
+		return 1;
+	}
+
+	real_root=realpath(root,NULL);
+	real_target=realpath(target,NULL);
+	len_real_root = strlen(real_root);
+	len_real_target = strlen(real_target);
+
+	if(debug){
+		printf("\e[32;1mroot: %s, real root: %s\e[0m\n",root,real_root);
+		printf("\e[32;1mtarget: %s, real target: %s\e[0m\n",target,real_target);
+	}
+
+	if((len_real_target>=len_real_root) && (memcmp(real_target,real_root,len_real_root)==0)){
+		free(real_root);
+		free(real_target);
+		if(debug) printf("\e[34;1mAccess allow!\e[0m\n");
+		return 1;	
+	}else{
+		free(real_root);
+		free(real_target);
+		if(debug) printf("\e[34;1mAccess deny!\e[0m\n");
+		return 0;
+	}
+}
 
 
 /**************/
@@ -44,14 +75,18 @@ HOOK_ARG_2(mkdir,path,int,const char*,path,mode_t,mode)
 HOOK_ARG_2(creat,path,int,const char*,path,mode_t,mode)
 //int creat64(const char *path, mode_t mode);
 HOOK_ARG_2(creat64,path,int,const char*,path,mode_t,mode)
+//int open(const char *pathname, int flags);
+HOOK_ARG_2(open,pathname,int,const char*,pathname,int,flags)
+//int open64(const char *pathname, int flags);
+HOOK_ARG_2(open64,pathname,int,const char*,pathname,int,flags)
 
 /*****************************/
 /*two arguments(special case)*/
 /*****************************/
 //FILE *fopen(const char *filename, const char *mode)
-HOOK_ARG_2_NUL(fopen,filename,FILE*,const char*,filename,const char*, mode)
+HOOK_ARG_2_NUL(fopen,filename,FILE*,const char*__restrict,filename,const char*__restrict,mode)
 //FILE *fopen64(const char *filename, const char *mode)
-HOOK_ARG_2_NUL(fopen64,filename,FILE*,const char*,filename,const char*, mode)
+HOOK_ARG_2_NUL(fopen64,filename,FILE*,const char*__restrict,filename,const char*__restrict,mode)
 
 
 /******************************/
@@ -63,10 +98,6 @@ HOOK_ARG_2_DC(rename,old,new,int,const char*,old,const char*,new)
 HOOK_ARG_2_DC(symlink,path1,path2,int,const char*,path1,const char*,path2)
 //int link(const char * path1, const char *path2);
 HOOK_ARG_2_DC(link,path1,path2,int,const char *,path1,const char*,path2)
-//int open(const char *pathname, int flags);
-HOOK_ARG_2(open,pathname,int,const char*,pathname,int,flags)
-//int open64(const char *pathname, int flags);
-HOOK_ARG_2(open64,pathname,int,const char*,pathname,int,flags)
 
 
 /*****************/
@@ -109,11 +140,8 @@ HOOK_EXEC(execvp,file,int,const char *file, char *const argv[])
 HOOK_EXEC(system,command,int,const char *command)
 //int execve(const char *pathname, char *const argv[],char *const envp[]);
 HOOK_EXEC(execve,pathname,int,const char *pathname, char *const argv[],char *const envp[])
-
-
-
-void hook_start(){
-	if(strncmp("True",getenv("MY_DEBUG"),4)==0) debug=1;
+static __attribute__((constructor(101))) void hook_start(){
+	if(strncmp("True",getenv("XIAOBYE_DEBUG"),4)==0) debug=1;
 	else debug=0;
 	if(debug){
 		ENTER();
@@ -148,9 +176,10 @@ void hook_start(){
 	LOAD_FUNC(open64);
 }
 
-void hook_stop(){
+static __attribute__((destructor)) void hook_stop(){
 	if(debug){
 		ENTER();
 		printf("Stop hooking....\n");
 	}
 }
+

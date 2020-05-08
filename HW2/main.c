@@ -4,26 +4,25 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include<limits.h>
+#include<dlfcn.h>
 
-extern char **environ;
 static char new_path[PATH_MAX];
 static char *path;
-static char * env[4]={NULL,NULL,NULL,NULL};
 void config_env(const char * app_root,const char *hook_lib,const char* debug){
-#ifdef DEBUG
-	printf("LD_PRELOAD: %s\n",hook_lib);
-	printf("MY_APP_ROOT: %s\n",app_root);
-	printf("MY_DEBUG: %s\n",debug);
-#endif
 	setenv("LD_PRELOAD",hook_lib,1);
-	setenv("MY_APP_ROOT",app_root,1);
-	setenv("MY_DEBUG",debug,1);//"True" or "False"
+	setenv("XIAOBYE_SANDBOX_ROOT",app_root,1);
+	setenv("XIAOBYE_DEBUG",debug,1);//"True" or "False"
+#ifdef DEBUG
+	printf("LD_PRELOAD: %s\n",getenv("LD_PRELOAD"));
+	printf("XIAOBYE_SANDBOX_ROOT: %s\n",getenv("XIAOBYE_SANDBOX_ROOT"));
+	printf("XIAOBYE_DEBUG: %s\n",getenv("XIAOBYE_DEBUG"));
+#endif
 }
 void exec_cmd(char **argv){
 #ifdef DEBUG
 	printf("path: %s , arg: %s:%llx,%s:%llx\n",argv[optind],argv[optind+1],argv[optind+1],argv[optind+2],argv[optind+2]);
 #endif
-	execvp(argv[optind++],&argv[optind]);
+	execvp(argv[optind],&argv[optind]);
 }
 
 int getopt(int argc, char * const argv[],const char *optstring);
@@ -34,7 +33,7 @@ int main(int argc,char **argv){
 	char *app_root = "./";
 	char *debug = "False";
 	char opt;
-	while ((opt = getopt(argc, argv, "--p:d:D")) != -1) {
+	while ((opt = getopt(argc, argv, "p:d:D")) != -1) {
         switch (opt) {
 			case 'p':
 				plib = optarg;

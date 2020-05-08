@@ -1,4 +1,3 @@
-extern int debug;
 
 #define FILE_OP_DENY(name) printf("[sandbox] %s: access to %s is not allowed\n",__FUNCTION__,name)
 #define ENTER() printf("\e[33;1m[Enter %s()]\e[0m\n",__FUNCTION__)
