@@ -10,7 +10,7 @@
 #include"comm.h"
 
 static int debug=0;
-static void *libc_handle;
+static void *libc_handle=NULL;
 
 //validate access right
 int valid_access(const char* target){
@@ -156,32 +156,6 @@ static __attribute__((constructor(101))) void hook_start(){
 		printf("Start hooking....\n");
 		printf("Start loading libc.so.6\n");
 	}
-	if((libc_handle = dlopen("libc.so.6",RTLD_LAZY))==NULL){
-		fprintf(stderr,"libc_handle: %llX",libc_handle);
-		fprintf(stderr,"dlopen() error: %s\n",dlerror());
-	}
-	LOAD_FUNC(opendir);
-	LOAD_FUNC(remove);
-	LOAD_FUNC(unlink);
-	LOAD_FUNC(rmdir); 
-	LOAD_FUNC(chdir);
-	LOAD_FUNC(chmod);
-	LOAD_FUNC(mkdir);
-	LOAD_FUNC(creat);
-	LOAD_FUNC(creat64);
-	LOAD_FUNC(open);
-	LOAD_FUNC(fopen);
-	LOAD_FUNC(chown);
-	LOAD_FUNC(readlink);
-	LOAD_FUNC(__xstat64);
-	LOAD_FUNC(__xstat);
-	LOAD_FUNC(openat);
-	LOAD_FUNC(rename);
-	LOAD_FUNC(symlink);
-	LOAD_FUNC(link);
-	LOAD_FUNC(openat64);
-	LOAD_FUNC(fopen64);
-	LOAD_FUNC(open64);
 }
 
 static __attribute__((destructor)) void hook_stop(){
