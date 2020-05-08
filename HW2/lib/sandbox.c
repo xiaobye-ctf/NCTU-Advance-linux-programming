@@ -11,7 +11,7 @@
 
 static int debug=0;
 static void *libc_handle=NULL;
-
+static FILE* my_out=NULL;
 //validate access right
 int valid_access(const char* target){
 	char* root;
@@ -149,6 +149,13 @@ static __attribute__((constructor(101))) void hook_start(){
 }
 
 static __attribute__((destructor)) void hook_stop(){
+	if(my_out!=NULL){
+		if(debug)fprintf(stderr,"fclose(my_out)\n");
+		fclose(my_out);
+		my_out=NULL;
+	}else{
+		if(debug)fprintf(stderr,"Something wrong with my_out\n");
+	}
 	if(debug){
 		ENTER();
 		printf("Stop hooking....\n");

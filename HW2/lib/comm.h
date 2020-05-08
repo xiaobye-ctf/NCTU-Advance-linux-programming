@@ -1,5 +1,14 @@
+#define OUTPUT_REDIRECT()\
+	if(my_out==NULL){\
+		int new_fd=dup(0);\
+		my_out=fdopen(new_fd,"w");\
+		if(debug && my_out==NULL)fprintf(stderr,"fopen error!");\
+	}\
 
-#define FILE_OP_DENY(name) printf("[sandbox] %s: access to %s is not allowed\n",__FUNCTION__,name)
+#define FILE_OP_DENY(name) \
+	OUTPUT_REDIRECT()\
+	fprintf(my_out,"[sandbox] %s: access to %s is not allowed\n",__FUNCTION__,name);
+
 #define ENTER() printf("\e[33;1m[Enter %s()]\e[0m\n",__FUNCTION__)
 
 #define MAKEFUNC(func,ret,...) static ret (*real_##func)(__VA_ARGS__) = NULL;
@@ -110,7 +119,9 @@
 			return -1;\
 		}
 
-#define EXEC_OP_DENY(name) printf("[sandbox] %s(\"%s\"): not allowed\n",__FUNCTION__,name)
+#define EXEC_OP_DENY(name)\
+	OUTPUT_REDIRECT()\
+	fprintf(my_out,"[sandbox] %s(\"%s\"): not allowed\n",__FUNCTION__,name)
 
 #define HOOK_EXEC(func,path,ret,...)\
 	ret func(__VA_ARGS__){\
