@@ -84,13 +84,13 @@
 #define HOOK_ARG_2_DC(func,path1,path2,ret,arg1,a1,arg2,a2)\
 		MAKEFUNC(func,ret,arg1,arg2)\
 		ret func(arg1 a1,arg2 a2){ \
-			int valid_path1 = 0;\
+			int a = 0;\
 			if(debug)ENTER();\
-			if((valid_path1=valid_access(path1)) && valid_access(path2)){ \
+			if((a=valid_access(path1)) && valid_access(path2)){ \
 				LOAD_FUNC(func)\
 				if(real_##func!=NULL)return real_##func(a1,a2); \
 			}else{ \
-				if(!valid_path1){FILE_OP_DENY(path1);} \
+				if(a){FILE_OP_DENY(path1);} \
 				else{FILE_OP_DENY(path2);} \
 			} \
 			return -1;\
