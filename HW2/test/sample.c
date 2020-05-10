@@ -23,7 +23,7 @@ int main() {
 	link(FILE_A, FILE_B);
 	mkdir(FILE_A, 0755);
 	open(FILE_A, O_RDONLY);
-	openat(AT_FDCWD, FILE_A, 0755);
+	openat(AT_FDCWD, FILE_A, 0755,1,67);
 	opendir(FILE_A);
 	readlink(FILE_NULL, buf, sizeof(buf));
 	remove(FILE_A);

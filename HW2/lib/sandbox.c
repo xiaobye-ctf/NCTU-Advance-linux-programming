@@ -74,10 +74,6 @@ HOOK_ARG_2(mkdir,path,int,const char*,path,mode_t,mode)
 HOOK_ARG_2(creat,path,int,const char*,path,mode_t,mode)
 //int creat64(const char *path, mode_t mode);
 HOOK_ARG_2(creat64,path,int,const char*,path,mode_t,mode)
-//int open(const char *pathname, int flags);
-HOOK_ARG_2(open,pathname,int,const char*,pathname,int,flags)
-//int open64(const char *pathname, int flags);
-HOOK_ARG_2(open64,pathname,int,const char*,pathname,int,flags)
 
 /*****************************/
 /*two arguments(special case)*/
@@ -110,6 +106,11 @@ HOOK_ARG_3(readlink,path,ssize_t,const char*,path,char*,buf,size_t,bufsiz)
 HOOK_ARG_3(__xstat,path,int,int,ver,const char *,path,struct stat*,stat_buf)
 //int __xstat64(int ver, const char * path, struct stat64 * stat_buf);
 HOOK_ARG_3(__xstat64,path,int,int,ver,const char *,path,struct stat*,stat_buf)
+//int open(const char *pathname, int flags);
+HOOK_ARG_3(open,pathname,int,const char*,pathname,int,flags,mode_t,mod)
+//int open64(const char *pathname, int flags);
+HOOK_ARG_3(open64,pathname,int,const char*,pathname,int,flags,mode_t,mod)
+
 
 
 /*****************/
