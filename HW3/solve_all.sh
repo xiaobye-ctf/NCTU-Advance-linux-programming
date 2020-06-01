@@ -18,3 +18,27 @@ echo ''
 echo dec2ascii:
 cat dec2ascii.asm | nc aup.zoolab.org 2504 | grep -o 'ASM{.*}'
 echo ''
+
+echo dispbin:
+cat dispbin.asm | nc aup.zoolab.org 2505 | grep -o 'ASM{.*}'
+echo ''
+
+echo eval1:
+cat eval1.asm | nc aup.zoolab.org 2506 | grep -o 'ASM{.*}'
+echo ''
+
+echo isolatebit:
+cat isolatebit.asm | nc aup.zoolab.org 2507 | grep -o 'ASM{.*}'
+echo ''
+
+echo leax:
+cat leax.asm | nc aup.zoolab.org 2508 | grep -o 'ASM{.*}'
+echo ''
+
+echo loop15:
+cat loop.asm | nc aup.zoolab.org 2509 | grep -o 'ASM{.*}'
+echo ''
+
+echo math1:
+cat math1.asm | nc aup.zoolab.org 2510 | grep -o 'ASM{.*}'
+echo ''
