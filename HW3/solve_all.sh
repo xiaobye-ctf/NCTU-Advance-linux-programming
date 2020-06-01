@@ -42,3 +42,51 @@ echo ''
 echo math1:
 cat math1.asm | nc aup.zoolab.org 2510 | grep -o 'ASM{.*}'
 echo ''
+
+echo math2:
+cat math2.asm | nc aup.zoolab.org 2511 | grep -o 'ASM{.*}'
+echo ''
+
+echo math3:
+cat math3.asm | nc aup.zoolab.org 2512 | grep -o 'ASM{.*}'
+echo ''
+
+echo math4
+cat math4.asm | nc aup.zoolab.org 2513 | grep -o 'ASM{.*}'
+echo ''
+
+echo math5
+cat math5.asm | nc aup.zoolab.org 2514 | grep -o 'ASM{.*}'
+echo ''
+
+echo minicall:
+cat minicall.asm | nc aup.zoolab.org 2515 | grep -o 'ASM{.*}'
+echo ''
+
+echo mulbyshift
+cat mulbyshift.asm | nc aup.zoolab.org 2516 | grep -o 'ASM{.*}'
+echo ''
+
+echo posneg:
+cat posneg.asm | nc aup.zoolab.org 2517 | grep -o 'ASM{.*}'
+echo ''
+
+echo recur:
+python recur.py | grep -o 'ASM{.*}'
+echo ''
+
+echo swapmem:
+cat swapmem.asm | nc aup.zoolab.org 2519 | grep -o 'ASM{.*}'
+echo ''
+
+echo swapreg:
+cat swapreg.asm | nc aup.zoolab.org 2520 | grep -o 'ASM{.*}'
+echo ''
+
+echo tolower:
+cat tolower.asm | nc aup.zoolab.org 2521 | grep -o 'ASM{.*}'
+echo ''
+
+echo ul+lu:
+cat ul+lu.asm | nc aup.zoolab.org 2522 | grep -o 'ASM{.*}'
+echo ''
